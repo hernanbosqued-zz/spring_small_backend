@@ -22,7 +22,10 @@ public class TaskController {
     public @ResponseBody String addNewUser () {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-        Task n = new Task("title", "description", false);
+        Task n = new Task();
+        n.setDescription("lombok description");
+        n.setTitle("lombok title");
+        n.setDone(true);
         repository.save(n);
         return "Saved";
     }
