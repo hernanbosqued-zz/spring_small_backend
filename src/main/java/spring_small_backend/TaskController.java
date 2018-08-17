@@ -16,33 +16,33 @@ public class TaskController {
 
     @GetMapping(path = "/tasks")
     public @ResponseBody
-    Iterable<Task> getTasks() {
-        return repository.findAll();
-    }
-
-    @PostMapping("/tasks")
-    public Task createNote(@Valid @RequestBody Task note) {
-        return repository.save(note);
+    ResponseEntity<DataResponse<Iterable<Task>>> getTasks() {
+        return ResponseEntity.ok().body(new DataResponse<>(true, repository.findAll()));
     }
 
     @GetMapping("/tasks/{id}")
-    public Task getTask(@PathVariable(value = "id") long id) {
-        return repository.findById(id).orElseThrow(null);
+    public ResponseEntity<DataResponse<Task>> getTask(@PathVariable(value = "id") long id) {
+        return ResponseEntity.ok().body(new DataResponse<>(true, repository.findById(id).orElseThrow(null)));
+    }
+
+    @PostMapping("/tasks")
+    public ResponseEntity<DataResponse<Task>> createNote(@Valid @RequestBody Task task) {
+        return ResponseEntity.ok().body(new DataResponse<>(true, repository.save(task)));
     }
 
     @PutMapping("/tasks/{id}")
-    public Task updateNote(@PathVariable(value = "id") long id, @Valid @RequestBody Task task) {
+    public ResponseEntity<DataResponse<Task>> updateNote(@PathVariable(value = "id") long id, @Valid @RequestBody Task task) {
         Task response = repository.findById(id).orElseThrow(null);
         response.setTitle(task.title);
         response.setDescription(task.description);
         response.setDone(task.done);
-        return repository.save(response);
+        return ResponseEntity.ok().body(new DataResponse<>(true, repository.save(response)));
     }
 
     @DeleteMapping("/tasks/{id}")
-    public ResponseEntity<Task> deleteNote(@PathVariable(value = "id") long id) {
+    public ResponseEntity<Response> deleteNote(@PathVariable(value = "id") long id) {
         Task note = repository.findById(id).orElseThrow(null);
         repository.delete(note);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(new Response(true));
     }
 }
